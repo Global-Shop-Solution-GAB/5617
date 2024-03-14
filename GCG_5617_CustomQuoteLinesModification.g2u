@@ -1,0 +1,489 @@
+﻿Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'Author: Daniel Duncan
+'Customer: Sterling Process Eng. & Serv.
+'Program Name: Custom Quote Lines Modification
+'Date Started: 8/6/2019
+'Description: This project is placed in Estimating / Routing & Quote Management.  This program modifies the screen to the user's specification, locking fields and renaming labels.  It also validates some fields in the sense that it ensures the fields have data in them.  It also creates a new contact if the contact specified on the quote does not exist for the customer.  Lastly, it creates a directory structure for the quote by copying from the specified template directory.
+'Quote: 11531-0
+'GAP: 5617
+
+	'Hook 10710: Quote Header Populate Hook
+	'Hook 10980: Quote Header Script 3 hook
+	'Hook 10922: Quote Header Pre Save hook
+	'Hook 10923: Quote Header Post Save hook
+	'Hook 10260: Quote Line Populate Hook
+	'Hook 10531: Quote Line Pre Save hook
+	
+	v.Local.sValidation.Declare(string)
+	v.Local.sRet.Declare(string)
+	
+	f.Intrinsic.Control.Try		
+		f.Intrinsic.Control.SelectCase(v.Caller.Hook)
+	
+		
+			f.Intrinsic.Control.Case(10940)
+				'Print
+				f.Intrinsic.Control.CallSub(ExportDoc)
+			f.Intrinsic.Control.Case(10710)
+				'Script 3
+				v.Passed.000203.Set("Open Dir")	
+				F.Intrinsic.Control.If(V.Caller.Switches,<>,"O")
+					F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000203,"LOCK",1)
+				F.Intrinsic.Control.endif
+				'PreQuote
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000113,"LOCK",1)
+				
+				'Price Class Discount
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000067,"LOCK",1)
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000076,"LOCK",1)
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000075,"LOCK",1)
+				
+				'Quote Discount
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000068,"LOCK",1)
+				
+				'Price Category
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000083,"LOCK",1)
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000085,"LOCK",1)
+				
+				'Discount All Items
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000047,"LOCK",1)
+				
+				'Sort 1
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000045,"LOCK",1)
+				
+				'Sort 2
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000073,"LOCK",1)
+				
+				'Location
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000065,"LOCK",1)
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000066,"LOCK",1)
+				
+				'Approved By
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000081,"LOCK",1)
+				
+				'Area
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000043,"LOCK",1)
+				
+				'Branch
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000044,"LOCK",1)
+				
+				'Comm Type
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000041,"LOCK",1)
+				
+				'Process Group
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000111,"LOCK",1)
+				
+				'Primary Group
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000189,"LOCK",1)
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000192,"LOCK",1)
+				
+				'Secondary Group
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000191,"LOCK",1)
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000193,"LOCK",1)
+				
+				'Carrier Account
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000177,"LOCK",1)
+				
+				'3rd party freight
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000088,"LOCK",1)
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000089,"LOCK",1)
+				
+				'Quote Date
+				V.Passed.000147.Set("Due/Sent")
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.GAB-LBL-6,"HIDE",0)
+				F.Intrinsic.Variable.SetProperty("GAB-LBL-6","PT",327)
+				F.Intrinsic.Variable.SetProperty("GAB-LBL-6","PL",46)
+				F.Intrinsic.Variable.SetProperty("GAB-LBL-6","PW",30)
+				V.Passed.GAB-LBL-6.Set("Quote")
+				'Due Date
+				v.Passed.000146.Set("Proj. Due")
+				'Reference
+				v.Passed.000145.Set("RFQ#/PO# Only")
+			f.Intrinsic.Control.Case(10980)
+				'Open the directory
+				f.Intrinsic.Control.CallSub(OpenDirectory)
+			f.Intrinsic.Control.Case(10922)			
+				'Validate Due Date and Sales Rep are filled out
+				f.Intrinsic.Control.If(v.Passed.000024,=,"")
+					f.Intrinsic.String.Build("{0}{1}Due Date must have a value entered",v.Local.sValidation,v.Ambient.NewLine,v.Local.sValidation)
+				f.Intrinsic.Control.EndIf
+				f.Intrinsic.Control.If(v.Passed.000030,=,"")
+					f.Intrinsic.String.Build("{0}{1}Salesperson must have a value entered",v.Local.sValidation,v.Ambient.NewLine,v.Local.sValidation)
+				f.Intrinsic.Control.EndIf
+				F.Intrinsic.Control.If(V.Local.sValidation,!=,"")
+					f.Intrinsic.String.Build("The quote header cannot be saved until the following errors are addressed:{0}{0}{1}",v.Ambient.NewLine,v.Local.sValidation,v.Local.sValidation)
+				F.Intrinsic.Control.EndIf
+				
+				f.Intrinsic.Control.If(v.Local.sValidation,!=,"")
+					f.Intrinsic.UI.Msgbox(v.Local.sValidation,"Errors in Quote")
+					v.Passed.777777.Set(1)
+					f.Intrinsic.Control.End
+				f.Intrinsic.Control.EndIf
+				
+				'Create new contact
+				F.Intrinsic.Control.CallSub(CreateContact)
+			F.Intrinsic.Control.Case(10923)
+				'Create new directory
+				
+				F.Intrinsic.Control.CallSub(CreateDirectory)
+			f.Intrinsic.Control.Case(10260)
+				'Populate: Format controls (Info 1 and 2)
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000028,"LOCK",1)
+				F.Intrinsic.UI.ChangeCallerProperty(V.Passed.000029,"LOCK",1)
+				v.Passed.000030.Set("Y")
+			f.Intrinsic.Control.Case(10531)
+				'Pre Save: Validate cost and UF1
+				f.Intrinsic.Control.If(v.Passed.000012,=,0)
+					f.Intrinsic.String.Build("{0}{1}Cost must be entered",v.Local.sValidation,v.Ambient.NewLine,v.Local.sValidation)
+				f.Intrinsic.Control.EndIf
+				f.Intrinsic.Control.If(v.Passed.000030,!=,"Y")
+				f.Intrinsic.Control.AndIf(v.Passed.000030,!=,"N")
+					f.Intrinsic.Control.If(v.Passed.000030,=,"")
+						v.Passed.000030.Set("Y")
+					f.Intrinsic.Control.Else
+						'Get the user field 1 title
+						f.ODBC.Connection!con.opencompanyconnection
+						f.ODBC.Connection!con.executeandreturn("SELECT TEXT1 FROM OP_HEADER WHERE ID = 401324",v.Local.sRet)
+						f.ODBC.Connection!con.Close
+						f.Intrinsic.String.Build("{0}{1}{2} must have either a Y or N entered",v.Local.sValidation,v.Ambient.NewLine,v.Local.sRet.Trim,v.Local.sValidation)
+					f.Intrinsic.Control.EndIf
+					
+				f.Intrinsic.Control.EndIf
+				F.Intrinsic.Control.If(V.Local.sValidation,!=,"")
+					f.Intrinsic.String.Build("The quote line cannot be saved until the following errors are addressed:{0}{0}{1}",v.Ambient.NewLine,v.Local.sValidation,v.Local.sValidation)
+				F.Intrinsic.Control.EndIf
+				
+				f.Intrinsic.Control.If(v.Local.sValidation,!=,"")
+					f.Intrinsic.UI.Msgbox(v.Local.sValidation,"Errors in Quote")
+					v.Passed.777777.Set(1)
+					f.Intrinsic.Control.End
+				f.Intrinsic.Control.EndIf
+		f.Intrinsic.Control.EndSelect
+	f.Intrinsic.Control.Catch
+		f.Intrinsic.Control.CallSub(ErrorMsg, CurrentSub, v.Ambient.CurrentSubroutine)
+	f.Intrinsic.Control.EndTry	
+Program.Sub.Main.End
+
+Program.Sub.CreateContact.Start
+	f.Intrinsic.Control.Try
+		v.Local.sSQL.Declare(string)
+		v.Local.sName.Declare(string)
+		v.Local.sFirstName.Declare(string,"")
+		v.Local.sLastName.Declare(string,"")
+		v.Local.iRet.Declare(long)
+		v.Local.sSeq.Declare(string)
+		v.Local.iID.Declare(long)
+		v.Local.sDate.Declare(string)
+		v.Local.sTime.Declare(string)
+		
+		'If name is not filled out, cannot continue
+		f.Intrinsic.Control.If(v.Passed.000001,=,"")
+			f.Intrinsic.Control.ExitSub
+		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.String.Split(v.Passed.000001," ",v.Local.sName)
+		
+		'Both name and email must be filled out for contact to be saved
+		F.Intrinsic.Control.If(V.Local.sNAME.Trim,=,"")
+		f.Intrinsic.Control.AndIf(v.passed.000071,!=,"")
+			f.Intrinsic.UI.Msgbox("The contact must have both a name and an email to be saved.")
+			f.Intrinsic.Control.ExitSub
+		F.Intrinsic.Control.EndIf
+		f.Intrinsic.Control.If(v.Passed.000071,=,"")
+		f.Intrinsic.Control.AndIf(v.Local.sName.Trim,!=,"")
+			f.Intrinsic.UI.Msgbox("The contact must have both a name and an email to be saved.")
+			f.Intrinsic.Control.ExitSub
+		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.Control.If(v.Local.sName.UBound,=,1)
+			v.Local.sFirstName.Set(v.Local.sName(0))
+			v.Local.sLastName.Set(v.Local.sName(1))
+			'Escape single quotes in case the name has them
+			f.Intrinsic.String.Replace(v.Local.sFirstName,"'",v.Ambient.DblQuote,v.Local.sFirstName)
+			f.Intrinsic.String.Replace(v.Local.sLastName,"'",v.Ambient.DblQuote,v.Local.sLastName)
+		F.Intrinsic.Control.Else
+			V.Local.sFirstName.Set(V.Local.sName)
+		f.Intrinsic.Control.EndIf
+		f.Intrinsic.String.Build("select cust, type, name, seq, id, name_first, name_last, name_preferred, email1, active, PHONE1, ALT_ID, affiliation, seq, phone_t1, phone_t2, phone_t3, phone_t4, date_sync, time_sync, pri_address, last_chg_date, last_chg_time, last_chg_pgm, last_chg_by from CONTACT where cust='{0}' and name='{1} {2}' and email1='{3}';",v.Passed.000006, v.Local.sFirstName, v.Local.sLastName, v.Passed.000071, v.Local.sSQL)
+		f.ODBC.Connection!con.opencompanyconnection
+		f.Data.DataTable.CreateFromSQL("dtContact","con",v.local.sSQL)
+		f.Intrinsic.Control.If(v.DataTable.dtContact.RowCount,=,0)
+			'Get the number of contacts for the company, and assign the next ID to this contact
+			f.Intrinsic.String.Build("select count(*) from v_contact where cust='{0}';",v.Passed.000006,v.Local.sSQL)
+			f.ODBC.Connection!con.executeandreturn(v.Local.sSQL,v.Local.iRet)
+			f.Intrinsic.String.LPad(v.Local.iRet,"0",9,v.Local.sSeq)
+			
+			'Get the max(alt_id) and increment
+			v.Local.sSQL.set("select max(alt_id) from v_contact;")
+			f.ODBC.Connection!con.executeandreturn(v.Local.sSQL,v.Local.iID)
+			f.Intrinsic.Math.Add(v.Local.iID,1,v.Local.iID)
+			
+			'Set date and time strings
+			f.Intrinsic.String.DateString(v.Ambient.Now,v.Local.sDate)
+			f.Intrinsic.String.TimeStringSec(v.Ambient.Now,v.Local.sTime)
+			
+			F.Intrinsic.String.Build("INSERT INTO CONTACT (cust,type,name,name_first,name_last,name_preferred,email1,active,PHONE1,ID,alt_id,affiliation,seq,phone_t1,phone_t2,phone_t3,phone_t4,date_sync,time_sync,pri_address,last_chg_date,last_chg_time,last_chg_pgm,last_chg_by) VALUES ('{0}','{1}','{2} {12}','{3}','{4}','{3}','{5}',1,'{6}',{7},{8},0,'00','0','0','0','0','{9}','{10}',0,'{9}','{10}','{11}','{11}');",v.Passed.000006,"C",v.Local.sFirstName,v.Local.sFirstName,v.Local.sLastName,v.Passed.000071,V.Passed.000051,V.Local.sSeq,v.Local.iID,V.Local.sDate,V.Local.sTime,"GCG_5617",v.Local.sLastName,V.Local.sSQL)
+			F.ODBC.Connection!CON.EXECUTE(V.Local.sSQL)
+			'f.Data.DataTable.SaveToDB("dtContact","con","CONTACT","ALT_ID",256)
+		f.Intrinsic.Control.EndIf
+		f.ODBC.Connection!con.Close
+	f.Intrinsic.Control.Catch
+		f.Intrinsic.Control.CallSub(ErrorMsg, CurrentSub, v.Ambient.CurrentSubroutine)
+	f.Intrinsic.Control.EndTry
+Program.Sub.CreateContact.End
+
+Program.Sub.CreateDirectory.Start
+	f.Intrinsic.Control.Try
+		'Create the directory under the base directory, copied from the template directory
+		v.Local.sBaseDir.Declare(string)
+		v.Local.sTemplateDir.Declare(string)
+		v.Local.sReplaceText.Declare(string)
+		v.local.sSQL.Declare(string)
+		v.Local.sRet.Declare(string)
+		v.Local.sFilePath.Declare(string)
+		v.Local.sFileName.Declare(string)
+		v.Local.sUF1.Declare(string)
+		v.Local.bRet.Declare(boolean)
+		v.Local.sQuoteNo.Declare(string)
+		V.Local.sFileList.Declare(string)
+		v.Local.bExists.Declare(boolean)
+		v.Local.iCnt.Declare(long)
+		v.Local.sOldFileName.Declare(string)
+		v.Local.sNewFileName.Declare(string)
+		v.Local.iRet.Declare(long)
+		v.Local.sBIRptID.Declare(string)
+		V.Local.sParams.Declare
+		V.Local.sValues.Declare
+		v.Local.sQuoteNumInterval.Declare(string)
+		v.Local.iNumIntervalDigits.Declare(long)	
+		
+		
+		f.ODBC.Connection!con.opencompanyconnection			
+			'Get the directories specified in the custom table for this project
+			f.ODBC.Connection!con.executeandreturn("select top 1 * from GCG_5617_QTEDIRMNT where basedir !='' and templatedir !='';",v.Local.sRet)
+			f.Intrinsic.Control.If(v.Local.sRet,=,"")
+				f.Intrinsic.UI.Msgbox("The custom directory for this quotation was not created.  This is due to the fact that Base and Template directories have not been set in Estimating / Routing & Quote Management > Administration > Quote Directory Maintenance.  Please set these and save the quote again.","Cannot Create Directory")
+				f.Intrinsic.Control.End
+			f.Intrinsic.Control.Else
+				f.Intrinsic.String.Split(v.Local.sRet,"*!*",v.Local.sRet)
+				v.Local.sBaseDir.Set(v.local.sRet(0))
+				v.Local.sTemplateDir.Set(v.local.sRet(1))
+				
+				f.Intrinsic.Control.If(v.Local.sRet.UBound,=,2)
+					v.Local.sReplaceText.Set(v.Local.sRet(2))
+				f.Intrinsic.Control.EndIf
+				
+				'Get quote # and user field 1 from header, then create the file path
+				'Ensure that user field 1 is filled out, since it is used in naming the folder
+				f.Intrinsic.String.LPad(v.Passed.000003,"0",7,v.local.sQuoteNo)
+				F.Intrinsic.String.Build("select top 1 ltrim(rtrim(USER_1)) as USER_1 from v_quote_header where QUOTE_NO='{0}';",v.local.sQuoteNo,V.Local.sSQL)
+				f.ODBC.Connection!con.executeandreturn(V.Local.sSQL,v.Local.sUF1.Trim)
+				f.Intrinsic.Control.If(v.Local.sUF1,=,"")
+					f.Intrinsic.UI.Msgbox("USER FIELD 1 is blank.  It must be filled out before the quote directory can be created.","Cannot Create Directory")
+					f.Intrinsic.Control.End
+				f.Intrinsic.Control.EndIf
+				f.Intrinsic.String.LPad(v.Passed.000003,"0",5,v.local.sQuoteNo)
+				f.Intrinsic.String.Len(v.Local.sQuoteNo,v.Local.iNumIntervalDigits)
+				f.Intrinsic.Math.Sub(v.Local.iNumIntervalDigits,3,v.Local.iNumIntervalDigits)
+				f.Intrinsic.String.Left(v.Local.sQuoteNo,v.Local.iNumIntervalDigits,v.Local.sQuoteNumInterval)
+				'Customer uses subfolders under the base directory, each of which is named "B[rolling 1000's]s".  This means that quotes are stored in intervals of 1000, so for example: quote 13999 would be stored in a folder called B13000s, quote 14000 would be in B14000s, etc.
+				f.Intrinsic.String.Build("{0}\B{1}000s",v.local.sBaseDir,v.Local.sQuoteNumInterval,v.Local.sBaseDir)
+				f.Intrinsic.File.DirExists(v.Local.sBaseDir,v.Local.bExists)
+				f.Intrinsic.Control.If(v.Local.bExists,=,False)
+					f.Intrinsic.File.CreateDir(v.Local.sBaseDir)
+				f.Intrinsic.Control.EndIf
+				f.Intrinsic.String.Build("{0}\B{1} - {2} - {3}",v.Local.sBaseDir,v.local.sQuoteNo,v.Passed.000006.Trim,v.Local.sUF1.Trim,V.Local.sFilePath)
+'				f.Intrinsic.String.Build("{0}\B{1} - {2} - {3}.pdf",V.Local.sFilePath,v.local.sQuoteNo,v.Passed.000006.Trim,v.Local.sUF1.Trim,V.Local.sFileName)
+
+				'Copy the contents of the directory from template to base
+				f.Intrinsic.File.DirExists(v.Local.sFilePath,v.Local.bExists)
+				f.Intrinsic.Control.If(v.Local.bExists,=,False)
+					f.Intrinsic.File.copydirectory(v.Local.sTemplateDir,v.Local.sFilePath,False,v.Local.bRet)
+					f.Intrinsic.Control.If(v.Local.bRet,=,True)
+					f.Intrinsic.Control.AndIf(v.Local.sReplaceText,!=,"")
+						'Change any files that have the replacement text to the quote number
+						F.Intrinsic.String.Build("{0}\",V.Local.sFilePath,v.Local.sFilePath)
+						f.Intrinsic.File.GetFileList(v.Local.sFilePath,23,v.Local.sFileList)
+						f.Intrinsic.String.Split(v.Local.sFileList,":",v.Local.sFileList)
+						f.Intrinsic.Control.For(v.Local.iCnt,0,v.Local.sFileList.UBound,1)
+							f.Intrinsic.String.IsInString(v.Local.sFileList(v.local.iCnt),v.Local.sReplaceText,True,v.Local.bRet)
+							f.Intrinsic.Control.If(v.Local.bRet,=,True)
+								f.Intrinsic.String.Replace(v.Local.sFileList(v.local.iCnt),v.Local.sReplaceText,v.Local.sQuoteNo,v.Local.sNewFileName)
+								f.Intrinsic.String.Build("{0}{1}",v.Local.sFilePath,v.Local.sFileList(v.local.iCnt),v.Local.sOldFileName)
+								f.Intrinsic.String.Build("{0}{1}",v.Local.sFilePath,v.Local.sNewFileName,v.Local.sNewFileName)
+			
+								Function.Intrinsic.File.DirExists(v.Local.sOldFileName,v.Local.bRet)
+								f.Intrinsic.Control.If(v.Local.bRet,=, true)
+									Function.Intrinsic.File.MoveDirectory(v.Local.sOldFileName,v.Local.sNewFileName, v.Local.bRet)
+								f.Intrinsic.Control.Else
+									f.Intrinsic.File.MoveFile(v.Local.sOldFileName,v.Local.sNewFileName,v.Local.bRet)
+								f.Intrinsic.Control.EndIf
+								
+							f.Intrinsic.Control.EndIf
+						f.Intrinsic.Control.Next(v.Local.iCnt)
+						
+					f.Intrinsic.Control.EndIf
+					F.Intrinsic.UI.Msgbox("Quote directory was created for this quote.","Folder Create Successful")
+				f.Intrinsic.Control.EndIf
+				
+'				'Prompt user if he/she wants to reexport the quote
+'				f.Intrinsic.UI.MsgBox("Export quote?","",4,v.Local.iRet)
+'				f.Intrinsic.Control.If(v.Local.iRet,=,6)
+'					v.Local.iRunID.Declare
+'					v.local.iLogID.Declare		
+'					
+'					f.Intrinsic.String.LPad(v.Passed.000003,"0",7,v.local.sQuoteNo)
+'					f.Intrinsic.String.Build("{0}*!*{1}*!*{2}*!*{3}",V.Caller.Terminal,"000001","N","Y",V.Local.sValues)
+'					f.Global.BI.GetRunID(v.Local.iRunID)
+'					F.Global.BI.StartLogging(V.Local.iRunID,1,-1,V.Local.iLogID)
+'					F.Global.BI.StopLogging(V.Local.iLogID)
+'					
+'					f.Global.BI.RunReportPreProcessor(v.Local.iRunID,V.Local.iLogID,"Terminal*!*REPORTID*!*REV*!*PRTALL",v.Local.sValues,"",4,False,"",-1,"",0,v.Local.sFileName,"",v.Local.iRunID)
+'					f.Intrinsic.UI.Msgbox("Quote exported successfully")
+'				f.Intrinsic.Control.EndIf
+			f.Intrinsic.Control.EndIf
+		f.ODBC.Connection!con.Close
+	f.Intrinsic.Control.Catch
+		f.Intrinsic.Control.CallSub(ErrorMsg, CurrentSub, v.Ambient.CurrentSubroutine)
+	f.Intrinsic.Control.EndTry
+Program.Sub.CreateDirectory.End
+
+Program.Sub.OpenDirectory.Start
+	f.Intrinsic.Control.Try
+		v.Local.sRet.Declare(string)
+		v.Local.sBaseDir.Declare(string)
+		v.Local.sTemplateDir.Declare(string)
+		v.Local.sReplaceText.Declare(string)
+		v.local.sQuoteNo.Declare(string)
+		V.Local.sSQL.Declare(string)
+		V.Local.sFilePath.Declare(string)
+		v.Local.sUF1.Declare(string)
+		v.Local.bExists.Declare(boolean)
+		
+		f.ODBC.Connection!con.opencompanyconnection
+			'Open the directory for the specified quote
+			f.ODBC.Connection!con.executeandreturn("select top 1 * from GCG_5617_QTEDIRMNT where basedir !='' and templatedir !='';",v.Local.sRet)
+		f.ODBC.Connection!con.Close
+		f.Intrinsic.Control.If(v.Local.sRet,=,"")
+			f.Intrinsic.UI.Msgbox("The Base and Template directories have not been set in Estimating / Routing & Quote Management > Administration > Quote Directory Maintenance.  Please set these and save the quote again.","Cannot Open Directory")
+			f.Intrinsic.Control.End
+		f.Intrinsic.Control.Else
+			f.Intrinsic.String.Split(v.Local.sRet,"*!*",v.Local.sRet)
+			v.Local.sBaseDir.Set(v.local.sRet(0))
+			v.Local.sTemplateDir.Set(v.local.sRet(1))
+			
+			f.Intrinsic.Control.If(v.Local.sRet.UBound,=,2)
+				v.Local.sReplaceText.Set(v.Local.sRet(2))
+			f.Intrinsic.Control.EndIf
+			
+			'Get quote # and user field 1 from header, then create the file path
+			f.Intrinsic.String.LPad(v.Passed.000003,"0",7,v.local.sQuoteNo)
+			F.Intrinsic.String.Build("select top 1 ltrim(rtrim(USER_1)) as USER_1 from v_quote_header where QUOTE_NO='{0}';",v.local.sQuoteNo,V.Local.sSQL)
+			f.ODBC.Connection!con.opencompanyconnection
+				f.ODBC.Connection!con.executeandreturn(V.Local.sSQL,v.Local.sUF1.Trim)
+			f.ODBC.Connection!con.close
+			f.Intrinsic.String.LPad(v.Passed.000003,"0",5,v.local.sQuoteNo)
+			f.Intrinsic.String.Build("{0}\B{1} - {2} - {3}",v.Local.sBaseDir,v.local.sQuoteNo,v.Passed.000006.Trim,v.Local.sUF1.Trim,V.Local.sFilePath)
+			
+			'Copy the contents of the directory from template to base
+			f.Intrinsic.File.DirExists(v.Local.sFilePath,v.Local.bExists)
+			f.Intrinsic.Control.If(v.Local.bExists,=,False)
+				f.Intrinsic.UI.msgbox("The quote directory does not exist for this quote.  Please save the quote and try again.","Directory Does Not Exist")
+			f.Intrinsic.Control.Else
+				f.Intrinsic.Task.ShellExec(handle, "open",V.Local.sFilePath,"","", 0)
+			f.Intrinsic.Control.EndIf
+		f.Intrinsic.Control.EndIf
+	f.Intrinsic.Control.Catch
+		f.Intrinsic.Control.CallSub(ErrorMsg, CurrentSub, v.Ambient.CurrentSubroutine)
+	f.Intrinsic.Control.EndTry
+Program.Sub.OpenDirectory.End
+
+Program.Sub.ErrorMsg.Start
+v.Local.sError.Declare
+
+'Closes ODBC connection, default to connection : "con"
+f.Intrinsic.Control.If(v.ODBC!con.State, =, 1)
+	f.ODBC.Connection!con.Close
+f.Intrinsic.Control.EndIf
+
+'Generic Error message.
+f.Intrinsic.String.Build("Project GCG_5617_CustomQuoteLinesModification.g2u {0}{0}Subroutine: {1}{0}Error: {2} with Description: {3}", v.Ambient.NewLine, v.Args.CurrentSub, v.Ambient.ErrorNumber, v.Ambient.ErrorDescription, v.Local.sError)
+f.Intrinsic.UI.Msgbox(v.Local.sError)
+Program.Sub.ErrorMsg.End
+
+
+
+Program.Sub.ExportDoc.Start
+f.Intrinsic.Control.Try
+
+v.Local.iRet.Declare
+V.Local.sValues.Declare
+v.Local.sFileName.Declare
+v.local.sQuoteNo.Declare
+V.Local.sSQL.Declare
+v.Local.sUF1.Declare
+v.Local.sQuoteNumInterval.Declare
+v.Local.iNumIntervalDigits.Declare
+V.Local.sFilePath.Declare
+v.Local.sBaseDir.Declare
+v.Local.bExists.Declare
+v.Local.sRet.Declare
+
+	'Prompt user if he/she wants to reexport the quote
+	f.Intrinsic.UI.MsgBox("Export quote?","",4,v.Local.iRet)
+	f.Intrinsic.Control.If(v.Local.iRet,=,6)
+		v.Local.iRunID.Declare
+		v.local.iLogID.Declare	
+		
+		f.ODBC.Connection!con.opencompanyconnection
+		f.ODBC.Connection!con.executeandreturn("select top 1 * from GCG_5617_QTEDIRMNT where basedir !='' and templatedir !='';",v.Local.sRet)
+		f.Intrinsic.Control.If(v.Local.sRet,=,"")
+			f.Intrinsic.UI.Msgbox("The custom directory for this quotation was not created.  This is due to the fact that Base and Template directories have not been set in Estimating / Routing & Quote Management > Administration > Quote Directory Maintenance.  Please set these and save the quote again.","Cannot Create Directory")
+			f.Intrinsic.Control.End
+		f.Intrinsic.Control.Else
+			f.Intrinsic.String.Split(v.Local.sRet,"*!*",v.Local.sRet)
+			v.Local.sBaseDir.Set(v.local.sRet(0))
+		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.String.LPad(v.Passed.000003,"0",7,v.local.sQuoteNo)
+		F.Intrinsic.String.Build("select top 1 ltrim(rtrim(USER_1)) as USER_1 from v_quote_header where QUOTE_NO='{0}';",v.local.sQuoteNo,V.Local.sSQL)
+		f.ODBC.Connection!con.executeandreturn(V.Local.sSQL,v.Local.sUF1.Trim)
+		f.Intrinsic.Control.If(v.Local.sUF1,=,"")
+			f.Intrinsic.UI.Msgbox("USER FIELD 1 is blank.  It must be filled out before the quote directory can be created.","Cannot Create Directory")
+			f.Intrinsic.Control.End
+		f.Intrinsic.Control.EndIf
+		f.ODBC.Connection!con.Close
+		f.Intrinsic.String.LPad(v.Passed.000003,"0",5,v.local.sQuoteNo)
+		f.Intrinsic.String.Len(v.Local.sQuoteNo,v.Local.iNumIntervalDigits)
+		f.Intrinsic.Math.Sub(v.Local.iNumIntervalDigits,3,v.Local.iNumIntervalDigits)
+		f.Intrinsic.String.Left(v.Local.sQuoteNo,v.Local.iNumIntervalDigits,v.Local.sQuoteNumInterval)
+		'Customer uses subfolders under the base directory, each of which is named "B[rolling 1000's]s".  This means that quotes are stored in intervals of 1000, so for example: quote 13999 would be stored in a folder called B13000s, quote 14000 would be in B14000s, etc.
+		f.Intrinsic.String.Build("{0}\B{1}000s",v.local.sBaseDir,v.Local.sQuoteNumInterval,v.Local.sBaseDir)
+		f.Intrinsic.File.DirExists(v.Local.sBaseDir,v.Local.bExists)
+		f.Intrinsic.Control.If(v.Local.bExists,=,False)
+			f.Intrinsic.File.CreateDir(v.Local.sBaseDir)
+		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.String.Build("{0}\B{1} - {2} - {3}",v.Local.sBaseDir,v.local.sQuoteNo,v.Passed.000006.Trim,v.Local.sUF1.Trim,V.Local.sFilePath)
+		f.Intrinsic.String.Build("{0}\B{1} - {2} - {3}.pdf",V.Local.sFilePath,v.local.sQuoteNo,v.Passed.000006.Trim,v.Local.sUF1.Trim,V.Local.sFileName)
+		
+		f.Intrinsic.String.Build("{0}*!*{1}*!*{2}*!*{3}",V.Caller.Terminal,"000001","N","Y",V.Local.sValues)
+		f.Global.BI.GetRunID(v.Local.iRunID)
+		F.Global.BI.StartLogging(V.Local.iRunID,1,-1,V.Local.iLogID)
+		F.Global.BI.StopLogging(V.Local.iLogID)
+		f.Global.BI.RunReportPreProcessor(v.Local.iRunID,V.Local.iLogID,"Terminal*!*REPORTID*!*REV*!*PRTALL",v.Local.sValues,"",4,False,"",-1,"",0,v.Local.sFileName,"",v.Local.iRunID)
+		f.Intrinsic.UI.Msgbox("Quote exported successfully")
+	f.Intrinsic.Control.EndIf
+	f.Intrinsic.Control.end
+
+f.Intrinsic.Control.Catch
+		f.Intrinsic.Control.CallSub(ErrorMsg, CurrentSub, v.Ambient.CurrentSubroutine)
+Program.Sub.ExportDoc.End
+
+Program.Sub.Comments.Start
+${$5$}$2.0.0.0$}$2
+${$6$}$bbaker$}$20231018103836232$}$pM7xsHplA2E9VCTenDTJ47gi1rF/t66Wl41c/Lab43jqT1lBTcCIf9CGgSTX6TdKlBYYm/KCpvM=
+Program.Sub.Comments.End
