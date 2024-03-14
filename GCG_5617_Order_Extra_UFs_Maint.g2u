@@ -1,0 +1,338 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.Form_UF..Create(BaseForm)
+Gui.Form_UF..Caption("Order user fields maintenance")
+Gui.Form_UF..Size(5430,6360)
+Gui.Form_UF..MinX(0)
+Gui.Form_UF..MinY(0)
+Gui.Form_UF..Position(0,0)
+Gui.Form_UF..AlwaysOnTop(False)
+Gui.Form_UF..FontName("Tahoma")
+Gui.Form_UF..FontSize(8.25)
+Gui.Form_UF..ControlBox(True)
+Gui.Form_UF..MaxButton(True)
+Gui.Form_UF..MinButton(True)
+Gui.Form_UF..MousePointer(0)
+Gui.Form_UF..Moveable(True)
+Gui.Form_UF..Sizeable(False)
+Gui.Form_UF..ShowInTaskBar(True)
+Gui.Form_UF..TitleBar(True)
+Gui.Form_UF..Event(UnLoad,Form_UF_UnLoad)
+Gui.Form_UF.lbl1.Create(Label,"User field 6",True,810,195,0,90,645,True,0,"Tahoma",8.25,,0,0)
+Gui.Form_UF.lbl1.BorderStyle(0)
+Gui.Form_UF.txtOH_UF6.Create(TextBox,"",True,3120,300,0,1080,555,True,0,"Tahoma",8.25,,1)
+Gui.Form_UF.chkOH_UF6.Create(CheckBox)
+Gui.Form_UF.chkOH_UF6.Enabled(True)
+Gui.Form_UF.chkOH_UF6.Visible(True)
+Gui.Form_UF.chkOH_UF6.Zorder(0)
+Gui.Form_UF.chkOH_UF6.Size(1125,300)
+Gui.Form_UF.chkOH_UF6.Position(4305,555)
+Gui.Form_UF.chkOH_UF6.Caption("Required")
+Gui.Form_UF.chkOH_UF6.FontName("Tahoma")
+Gui.Form_UF.chkOH_UF6.FontSize(8.25)
+Gui.Form_UF.lbl2.Create(Label,"User field 7",True,810,195,0,105,1080,True,0,"Tahoma",8.25,,0,0)
+Gui.Form_UF.lbl2.BorderStyle(0)
+Gui.Form_UF.txtOH_UF7.Create(TextBox,"",True,3120,300,0,1095,990,True,0,"Tahoma",8.25,,1)
+Gui.Form_UF.chkOH_UF7.Create(CheckBox)
+Gui.Form_UF.chkOH_UF7.Enabled(True)
+Gui.Form_UF.chkOH_UF7.Visible(True)
+Gui.Form_UF.chkOH_UF7.Zorder(0)
+Gui.Form_UF.chkOH_UF7.Size(1125,300)
+Gui.Form_UF.chkOH_UF7.Position(4320,990)
+Gui.Form_UF.chkOH_UF7.Caption("Required")
+Gui.Form_UF.chkOH_UF7.FontName("Tahoma")
+Gui.Form_UF.chkOH_UF7.FontSize(8.25)
+Gui.Form_UF.lbl3.Create(Label,"User field 8",True,810,195,0,105,1530,True,0,"Tahoma",8.25,,0,0)
+Gui.Form_UF.lbl3.BorderStyle(0)
+Gui.Form_UF.txtOH_UF8.Create(TextBox,"",True,3120,300,0,1095,1440,True,0,"Tahoma",8.25,,1)
+Gui.Form_UF.chkOH_UF8.Create(CheckBox)
+Gui.Form_UF.chkOH_UF8.Enabled(True)
+Gui.Form_UF.chkOH_UF8.Visible(True)
+Gui.Form_UF.chkOH_UF8.Zorder(0)
+Gui.Form_UF.chkOH_UF8.Size(1125,300)
+Gui.Form_UF.chkOH_UF8.Position(4320,1440)
+Gui.Form_UF.chkOH_UF8.Caption("Required")
+Gui.Form_UF.chkOH_UF8.FontName("Tahoma")
+Gui.Form_UF.chkOH_UF8.FontSize(8.25)
+Gui.Form_UF.lbl4.Create(Label,"User field 9",True,810,195,0,120,1995,True,0,"Tahoma",8.25,,0,0)
+Gui.Form_UF.lbl4.BorderStyle(0)
+Gui.Form_UF.txtOH_UF9.Create(TextBox,"",True,3120,300,0,1110,1905,True,0,"Tahoma",8.25,,1)
+Gui.Form_UF.chkOH_UF9.Create(CheckBox)
+Gui.Form_UF.chkOH_UF9.Enabled(True)
+Gui.Form_UF.chkOH_UF9.Visible(True)
+Gui.Form_UF.chkOH_UF9.Zorder(0)
+Gui.Form_UF.chkOH_UF9.Size(1125,300)
+Gui.Form_UF.chkOH_UF9.Position(4335,1905)
+Gui.Form_UF.chkOH_UF9.Caption("Required")
+Gui.Form_UF.chkOH_UF9.FontName("Tahoma")
+Gui.Form_UF.chkOH_UF9.FontSize(8.25)
+Gui.Form_UF.lbl5.Create(Label,"User field 10",True,900,195,0,120,2445,True,0,"Tahoma",8.25,,0,0)
+Gui.Form_UF.lbl5.BorderStyle(0)
+Gui.Form_UF.txtOH_UF10.Create(TextBox,"",True,3120,300,0,1110,2355,True,0,"Tahoma",8.25,,1)
+Gui.Form_UF.chkOH_UF10.Create(CheckBox)
+Gui.Form_UF.chkOH_UF10.Enabled(True)
+Gui.Form_UF.chkOH_UF10.Visible(True)
+Gui.Form_UF.chkOH_UF10.Zorder(0)
+Gui.Form_UF.chkOH_UF10.Size(1125,300)
+Gui.Form_UF.chkOH_UF10.Position(4335,2355)
+Gui.Form_UF.chkOH_UF10.Caption("Required")
+Gui.Form_UF.chkOH_UF10.FontName("Tahoma")
+Gui.Form_UF.chkOH_UF10.FontSize(8.25)
+Gui.Form_UF.chkOL_UF10.Create(CheckBox)
+Gui.Form_UF.chkOL_UF10.Enabled(True)
+Gui.Form_UF.chkOL_UF10.Visible(True)
+Gui.Form_UF.chkOL_UF10.Zorder(0)
+Gui.Form_UF.chkOL_UF10.Size(1125,300)
+Gui.Form_UF.chkOL_UF10.Position(4365,5235)
+Gui.Form_UF.chkOL_UF10.Caption("Required")
+Gui.Form_UF.chkOL_UF10.FontName("Tahoma")
+Gui.Form_UF.chkOL_UF10.FontSize(8.25)
+Gui.Form_UF.txOL_UF10.Create(TextBox,"",True,3120,300,0,1140,5235,True,0,"Tahoma",8.25,,1)
+Gui.Form_UF.lbl6.Create(Label,"User field 10",True,900,195,0,150,5325,True,0,"Tahoma",8.25,,0,0)
+Gui.Form_UF.lbl6.BorderStyle(0)
+Gui.Form_UF.chkOL_UF9.Create(CheckBox)
+Gui.Form_UF.chkOL_UF9.Enabled(True)
+Gui.Form_UF.chkOL_UF9.Visible(True)
+Gui.Form_UF.chkOL_UF9.Zorder(0)
+Gui.Form_UF.chkOL_UF9.Size(1125,300)
+Gui.Form_UF.chkOL_UF9.Position(4365,4785)
+Gui.Form_UF.chkOL_UF9.Caption("Required")
+Gui.Form_UF.chkOL_UF9.FontName("Tahoma")
+Gui.Form_UF.chkOL_UF9.FontSize(8.25)
+Gui.Form_UF.txtOL_UF9.Create(TextBox,"",True,3120,300,0,1140,4785,True,0,"Tahoma",8.25,,1)
+Gui.Form_UF.lbl7.Create(Label,"User field 9",True,810,195,0,150,4875,True,0,"Tahoma",8.25,,0,0)
+Gui.Form_UF.lbl7.BorderStyle(0)
+Gui.Form_UF.chkOL_UF8.Create(CheckBox)
+Gui.Form_UF.chkOL_UF8.Enabled(True)
+Gui.Form_UF.chkOL_UF8.Visible(True)
+Gui.Form_UF.chkOL_UF8.Zorder(0)
+Gui.Form_UF.chkOL_UF8.Size(1125,300)
+Gui.Form_UF.chkOL_UF8.Position(4350,4320)
+Gui.Form_UF.chkOL_UF8.Caption("Required")
+Gui.Form_UF.chkOL_UF8.FontName("Tahoma")
+Gui.Form_UF.chkOL_UF8.FontSize(8.25)
+Gui.Form_UF.txtOL_UF8.Create(TextBox,"",True,3120,300,0,1125,4320,True,0,"Tahoma",8.25,,1)
+Gui.Form_UF.lbl8.Create(Label,"User field 8",True,810,195,0,135,4410,True,0,"Tahoma",8.25,,0,0)
+Gui.Form_UF.lbl8.BorderStyle(0)
+Gui.Form_UF.chkOL_UF7.Create(CheckBox)
+Gui.Form_UF.chkOL_UF7.Enabled(True)
+Gui.Form_UF.chkOL_UF7.Visible(True)
+Gui.Form_UF.chkOL_UF7.Zorder(0)
+Gui.Form_UF.chkOL_UF7.Size(1125,300)
+Gui.Form_UF.chkOL_UF7.Position(4350,3870)
+Gui.Form_UF.chkOL_UF7.Caption("Required")
+Gui.Form_UF.chkOL_UF7.FontName("Tahoma")
+Gui.Form_UF.chkOL_UF7.FontSize(8.25)
+Gui.Form_UF.txtOL_UF7.Create(TextBox,"",True,3120,300,0,1125,3870,True,0,"Tahoma",8.25,,1)
+Gui.Form_UF.lbl9.Create(Label,"User field 7",True,810,195,0,135,3960,True,0,"Tahoma",8.25,,0,0)
+Gui.Form_UF.lbl9.BorderStyle(0)
+Gui.Form_UF.chkOL_UF6.Create(CheckBox)
+Gui.Form_UF.chkOL_UF6.Enabled(True)
+Gui.Form_UF.chkOL_UF6.Visible(True)
+Gui.Form_UF.chkOL_UF6.Zorder(0)
+Gui.Form_UF.chkOL_UF6.Size(1125,300)
+Gui.Form_UF.chkOL_UF6.Position(4335,3435)
+Gui.Form_UF.chkOL_UF6.Caption("Required")
+Gui.Form_UF.chkOL_UF6.FontName("Tahoma")
+Gui.Form_UF.chkOL_UF6.FontSize(8.25)
+Gui.Form_UF.txtOL_UF6.Create(TextBox,"",True,3120,300,0,1110,3435,True,0,"Tahoma",8.25,,1)
+Gui.Form_UF.lbl10.Create(Label,"User field 6",True,810,195,0,120,3525,True,0,"Tahoma",8.25,,0,0)
+Gui.Form_UF.lbl10.BorderStyle(0)
+Gui.Form_UF.cmdSave.Create(Button)
+Gui.Form_UF.cmdSave.Enabled(True)
+Gui.Form_UF.cmdSave.Visible(True)
+Gui.Form_UF.cmdSave.Zorder(0)
+Gui.Form_UF.cmdSave.Size(1125,345)
+Gui.Form_UF.cmdSave.Position(2145,5700)
+Gui.Form_UF.cmdSave.Caption("Save")
+Gui.Form_UF.cmdSave.FontName("Tahoma")
+Gui.Form_UF.cmdSave.FontSize(8.25)
+Gui.Form_UF.cmdSave.Event(Click,cmdSave_Click1)
+Gui.Form_UF.cmdSave.BackColor(65280)
+Gui.Form_UF.lbl11.Create(Label,"Order Header User Fields Caption",True,2880,240,0,1320,135,True,0,"Tahoma",10,,0,0)
+Gui.Form_UF.lbl11.BorderStyle(0)
+Gui.Form_UF.lbl12.Create(Label,"Order Line User Fields Caption",True,2610,240,0,1395,3015,True,0,"Tahoma",10,,0,0)
+Gui.Form_UF.lbl12.BorderStyle(0)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+Program.Sub.Main.Start
+'Bryan Pham
+'06/22/2022
+'Call:  STE100-22020222118-0
+'Added quote header and line extra user fields maintenance
+
+'This script is for maintaining extra UFs of Order Header and Order Lines captions
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+v.Local.sRet.Declare
+Function.Intrinsic.Debug.InvokeDebugger
+Function.Intrinsic.Debug.Stop
+
+f.Intrinsic.Control.If(v.Caller.Switches,<>,"O")
+	f.ODBC.Connection!con.opencompanyconnection
+	'get all caption and required for extra UFs
+	f.ODBC.Connection!con.ExecuteAndReturn("Select RTRIM(OH_UF6), OH_UF6_REQUIRED,RTRIM(OH_UF7), OH_UF7_REQUIRED,RTRIM(OH_UF8), OH_UF8_REQUIRED,RTRIM(OH_UF9), OH_UF9_REQUIRED,RTRIM(OH_UF10), OH_UF10_REQUIRED, RTRIM(OL_UF6), OL_UF6_REQUIRED, RTRIM(OL_UF7), OL_UF7_REQUIRED, RTRIM(OL_UF8), OL_UF8_REQUIRED, RTRIM(OL_UF9), OL_UF9_REQUIRED, RTRIM(OL_UF10), OL_UF10_REQUIRED from GCG_5617_ORDER_EXTRA_UF_CAPTION",v.Local.sRet)
+	f.ODBC.Connection!con.Close
+	'pass them to textboxes and checkboxes
+	f.Intrinsic.Control.If(v.Local.sRet,<>,"")
+		f.Intrinsic.String.Split(v.Local.sRet,"*!*",v.Local.sRet)
+	'this part is for order header
+		gui.Form_UF.txtOH_UF6.Text(v.Local.sRet(0))
+		gui.Form_UF.txtOH_UF7.Text(v.Local.sRet(2))
+		gui.Form_UF.txtOH_UF8.Text(v.Local.sRet(4))
+		gui.Form_UF.txtOH_UF9.Text(v.Local.sRet(6))
+		gui.Form_UF.txtOH_UF10.Text(v.Local.sRet(8))
+	
+	
+		f.Intrinsic.Control.If(v.Local.sRet(1),=,True)
+			gui.Form_UF.chkOH_UF6.Value(True)
+		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.Control.If(v.Local.sRet(3),=,True)
+			gui.Form_UF.chkOH_UF7.Value(True)
+		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.Control.If(v.Local.sRet(5),=,True)
+			gui.Form_UF.chkOH_UF8.Value(True)
+		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.Control.If(v.Local.sRet(7),=,True)
+			gui.Form_UF.chkOH_UF9.Value(True)
+		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.Control.If(v.Local.sRet(9),=,True)
+			gui.Form_UF.chkOH_UF10.Value(True)
+		f.Intrinsic.Control.EndIf
+		
+	'this part is for order line
+		gui.Form_UF.txtOL_UF6.Text(v.Local.sRet(10))
+		gui.Form_UF.txtOL_UF7.Text(v.Local.sRet(12))
+		gui.Form_UF.txtOL_UF8.Text(v.Local.sRet(14))
+		gui.Form_UF.txtOL_UF9.Text(v.Local.sRet(16))
+		gui.Form_UF.txOL_UF10.Text(v.Local.sRet(18))
+		
+		f.Intrinsic.Control.If(v.Local.sRet(11),=,True)
+			gui.Form_UF.chkOL_UF6.Value(True)
+		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.Control.If(v.Local.sRet(13),=,True)
+			gui.Form_UF.chkOL_UF7.Value(True)
+		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.Control.If(v.Local.sRet(15),=,True)
+			gui.Form_UF.chkOL_UF8.Value(True)
+		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.Control.If(v.Local.sRet(17),=,True)
+			gui.Form_UF.chkOL_UF9.Value(True)
+		f.Intrinsic.Control.EndIf
+		
+		f.Intrinsic.Control.If(v.Local.sRet(19),=,True)
+			gui.Form_UF.chkOL_UF10.Value(True)
+		f.Intrinsic.Control.EndIf
+	f.Intrinsic.Control.EndIf
+	gui.Form_UF..Show
+f.Intrinsic.Control.EndIf
+	
+	
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndTry
+Program.Sub.Main.End
+
+Program.Sub.Form1_UnLoad.Start
+	f.Intrinsic.Control.End
+Program.Sub.Form1_UnLoad.End
+
+Program.Sub.ErrorMsg.Start
+v.Local.sError.Declare
+
+'Closes ODBC connection, default to connection : "con"
+f.Intrinsic.Control.If(v.ODBC!con.State, =, 1)
+	f.ODBC.Connection!con.Close
+f.Intrinsic.Control.EndIf
+
+'Generic Error message.
+f.Intrinsic.String.Build("Project GCG_5617_QuoteLineDirectoryMaintenance.g2u {0}{0}Subroutine: {1}{0}Error: {2} with Description: {3}", v.Ambient.NewLine, v.Args.CurrentSub, v.Ambient.ErrorNumber, v.Ambient.ErrorDescription, v.Local.sError)
+f.Intrinsic.UI.Msgbox(v.Local.sError)
+Program.Sub.ErrorMsg.End
+
+Program.Sub.cmdSave_Click1.Start
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+v.Local.sSQL.Declare
+v.Local.sOH_UF6_Req.Declare("String","0")
+v.Local.sOH_UF7_Req.Declare("String","0")
+v.Local.sOH_UF8_Req.Declare("String","0")
+v.Local.sOH_UF9_Req.Declare("String","0")
+v.Local.sOH_UF10_Req.Declare("String","0")
+
+v.Local.sOL_UF6_Req.Declare("String","0")
+v.Local.sOL_UF7_Req.Declare("String","0")
+v.Local.sOL_UF8_Req.Declare("String","0")
+v.Local.sOL_UF9_Req.Declare("String","0")
+v.Local.sOL_UF10_Req.Declare("String","0")
+
+v.Local.sOH_UF6_Req.Set(v.Screen.Form_UF!chkOH_UF6.Value)
+
+v.Local.sOH_UF7_Req.Set(v.Screen.Form_UF!chkOH_UF7.Value)
+
+v.Local.sOH_UF8_Req.Set(v.Screen.Form_UF!chkOH_UF8.Value)
+
+v.Local.sOH_UF9_Req.Set(v.Screen.Form_UF!chkOH_UF9.Value)
+
+v.Local.sOH_UF10_Req.Set(v.Screen.Form_UF!chkOH_UF10.Value)
+
+v.Local.sOL_UF6_Req.Set(v.Screen.Form_UF!chkOL_UF6.Value)
+
+v.Local.sOL_UF7_Req.Set(v.Screen.Form_UF!chkOL_UF7.Value)
+
+v.Local.sOL_UF8_Req.Set(v.Screen.Form_UF!chkOL_UF8.Value)
+
+v.Local.sOL_UF9_Req.Set(v.Screen.Form_UF!chkOL_UF9.Value)
+
+v.Local.sOL_UF10_Req.Set(v.Screen.Form_UF!chkOL_UF10.Value)
+
+f.ODBC.Connection!con.OpenCompanyConnection
+
+f.ODBC.Connection!con.ExecuteAndReturn("Select * from GCG_5617_ORDER_EXTRA_UF_CAPTION",v.Local.sSQL)
+'if there is not any caption in custom table, insert them
+f.Intrinsic.Control.If(v.Ambient.ExecuteAndReturnEOF,=,True)
+	f.Intrinsic.String.Build("Insert into GCG_5617_ORDER_EXTRA_UF_CAPTION values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}')",v.Screen.Form_UF!txtOH_UF6.Text,v.Local.sOH_UF6_Req,v.Screen.Form_UF!txtOH_UF7.Text,v.Local.sOH_UF7_Req,v.Screen.Form_UF!txtOH_UF8.Text,v.Local.sOH_UF8_Req,v.Screen.Form_UF!txtOH_UF9.Text,v.Local.sOH_UF9_Req,v.Screen.Form_UF!txtOH_UF10.Text,v.Local.sOH_UF10_Req,v.Screen.Form_UF!txtOL_UF6.Text,v.Local.sOL_UF6_Req,v.Screen.Form_UF!txtOL_UF7.Text,v.Local.sOL_UF7_Req,v.Screen.Form_UF!txtOL_UF8.Text,v.Local.sOL_UF8_Req,v.Screen.Form_UF!txtOL_UF9.Text,v.Local.sOL_UF9_Req,v.Screen.Form_UF!txOL_UF10.Text,v.Local.sOL_UF10_Req,v.Local.sSQL)
+'otherwise, update
+f.Intrinsic.Control.Else
+	f.Intrinsic.String.Build("Update GCG_5617_ORDER_EXTRA_UF_CAPTION set OH_UF6 = '{0}',OH_UF6_REQUIRED = '{1}',OH_UF7 = '{2}',OH_UF7_REQUIRED = '{3}',OH_UF8 = '{4}',OH_UF8_REQUIRED = '{5}',OH_UF9 = '{6}',OH_UF9_REQUIRED = '{7}',OH_UF10 = '{8}',OH_UF10_REQUIRED = '{9}',OL_UF6 = '{10}', OL_UF6_REQUIRED = '{11}',OL_UF7 = '{12}', OL_UF7_REQUIRED = '{13}',OL_UF8 = '{14}', OL_UF8_REQUIRED = '{15}',OL_UF9 = '{16}', OL_UF9_REQUIRED = '{17}',OL_UF10 = '{18}',OL_UF10_REQUIRED = '{19}'",v.Screen.Form_UF!txtOH_UF6.Text,v.Local.sOH_UF6_Req,v.Screen.Form_UF!txtOH_UF7.Text,v.Local.sOH_UF7_Req,v.Screen.Form_UF!txtOH_UF8.Text,v.Local.sOH_UF8_Req,v.Screen.Form_UF!txtOH_UF9.Text,v.Local.sOH_UF9_Req,v.Screen.Form_UF!txtOH_UF10.Text,v.Local.sOH_UF10_Req,v.Screen.Form_UF!txtOL_UF6.Text,v.Local.sOL_UF6_Req,v.Screen.Form_UF!txtOL_UF7.Text,v.Local.sOL_UF7_Req,v.Screen.Form_UF!txtOL_UF8.Text,v.Local.sOL_UF8_Req,v.Screen.Form_UF!txtOL_UF9.Text,v.Local.sOL_UF9_Req,v.Screen.Form_UF!txOL_UF10.Text,v.Local.sOL_UF10_Req,v.Local.sSQL)
+f.Intrinsic.Control.EndIf
+
+f.ODBC.Connection!con.Execute(v.Local.sSQL)
+f.ODBC.Connection!con.Close
+f.Intrinsic.Control.End
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdSave_Click1.End
+
+Program.Sub.Form_UF_UnLoad.Start
+f.Intrinsic.Control.Try
+V.Local.sError.Declare
+v.Local.sRet.Declare
+f.Intrinsic.UI.Msgbox("Have you saved all selections? All selections will be lost if you have not saved.","Attention!",4,v.Local.sRet)
+f.Intrinsic.Control.If(v.Local.sRet,=,"6")
+	f.Intrinsic.Control.End
+f.Intrinsic.Control.EndIf
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndTry
+Program.Sub.Form_UF_UnLoad.End
+
+Program.Sub.Comments.Start
+${$5$}$2.0.0.0$}$2
+${$6$}$bpham$}$20220701105115384$}$Di0riF4Q5RIv6jxva5zSWBaTvp+T0Dt6IwqwDTCNc/q5vVMQulY8J/qBvmdHLdX+JbLywOFv7B8=
+Program.Sub.Comments.End
