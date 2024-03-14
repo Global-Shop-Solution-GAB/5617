@@ -1,0 +1,131 @@
+﻿Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'Bryan Pham
+'06/22/2022
+'Call:  STE100-22020222118-0
+'Added quote header and line extra user fields maintenance
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+F.Intrinsic.Control.Try
+V.Local.sError.Declare
+v.Local.sSQL.Declare
+v.Local.sOrderNo.Declare
+v.Local.sQuote.Declare
+v.Local.sRet.Declare
+v.Local.sPart.Declare
+v.Local.sSortCode.Declare
+v.Local.sMsg.Declare
+v.Local.sUF.Declare
+v.Local.iCnt.Declare
+
+f.ODBC.Connection!con.OpenCompanyConnection
+f.Intrinsic.Control.SelectCase(v.Caller.Hook)
+'change part hook - transfer from quote to SO
+	f.Intrinsic.Control.Case(11565)
+		v.Local.sOrderNo.Set(v.Passed.000003)
+		f.Intrinsic.String.LPad(v.Local.sOrderNo,"0",7,v.Local.sOrderNo)
+		'we already have the SO number in DB
+		f.Intrinsic.String.Build("Select QUOTE from V_ORDER_HEADER where ORDER_NO = '{0}'",v.Local.sOrderNo,v.Local.sSQL)
+		f.ODBC.Connection!con.ExecuteAndReturn(v.Local.sSQL,v.Local.sQuote)
+		f.Intrinsic.Control.If(v.Ambient.ExecuteAndReturnEOF,=,False)
+		'get all quote header's UFs
+			f.Intrinsic.String.Build("Select RTRIM(A.USER_1),RTRIM(A.USER_2),RTRIM(A.USER_3),RTRIM(A.USER_4),RTRIM(A.USER_5),RTRIM(B.QH_UF6),RTRIM(B.QH_UF7), RTRIM(B.QH_UF8), RTRIM(B.QH_UF9), RTRIM(B.QH_UF10) from V_QUOTE_HEADER A left join GCG_5617_QUOTE_EXTRA_USER_FIELDS B on A.QUOTE_NO = B.QUOTE_NO where A.QUOTE_NO = '{0}'",v.Local.sQuote,v.Local.sSQL)
+			f.ODBC.Connection!con.ExecuteAndReturn(v.Local.sSQL,v.Local.sRet)
+			f.Intrinsic.Control.If(v.Ambient.ExecuteAndReturnEOF,=,False)
+			'split and update ORDER HEADER table
+				f.Intrinsic.String.Split(v.Local.sRet,"*!*",v.Local.sRet)
+					f.Intrinsic.String.Build("Update ORDER_HEADER set USER_1 = '{0}',USER_2 = '{1}',USER_3 = '{2}',USER_4 = '{3}',USER_5 = '{4}' where ORDER_NO = '{5}' and RECORD_NO = 'A'",v.Local.sRet(0),v.Local.sRet(1),v.Local.sRet(2),v.Local.sRet(3),v.Local.sRet(4),v.Local.sOrderNo,v.Local.sSQL)
+					f.ODBC.Connection!con.Execute(v.Local.sSQL)
+					'check custom table, see if any record for this order exists
+					f.Intrinsic.String.Build("Select * from GCG_5617_ORDER_EXTRA_USER_FIELDS where ORDER_NO = '{0}'",v.Local.sOrderNo,v.Local.sSQL)
+					f.ODBC.Connection!con.ExecuteAndReturn(v.Local.sSQL,v.Local.sRet)
+					'if not, insert
+					f.Intrinsic.Control.If(v.Ambient.ExecuteAndReturnEOF,=,True)
+						f.Intrinsic.String.Build("Insert into GCG_5617_ORDER_EXTRA_USER_FIELDS values('{0}','{1}','{2}','{3}','{4}','{5}')",v.Local.sOrderNo,v.Local.sRet(5),v.Local.sRet(6),v.Local.sRet(7),v.Local.sRet(8),v.Local.sRet(9),v.Local.sSQL)
+					'otherwise update
+					f.Intrinsic.Control.Else
+						f.Intrinsic.String.Build("Update GCG_5617_ORDER_EXTRA_USER_FIELDS set OH_UF6 = '{0}',OH_UF7 = '{1}',OH_UF8 = '{2}',OH_UF9 = '{3}',OH_UF10 = '{4}' where ORDER_NO = '{5}'",v.Local.sRet(5),v.Local.sRet(6),v.Local.sRet(7),v.Local.sRet(8),v.Local.sRet(9),v.Local.sOrderNo,v.Local.sSQL)
+					f.Intrinsic.Control.EndIf
+					f.ODBC.Connection!con.Execute(v.Local.sSQL)
+			f.Intrinsic.Control.EndIf
+			
+			'get all quote line's UFs
+			f.Intrinsic.String.Build("Select A.RECORD_NO,RTRIM(A.USER_1),RTRIM(A.USER_2),RTRIM(A.USER_3),RTRIM(A.USER_4),RTRIM(A.USER_5),RTRIM(B.QL_UF6),RTRIM(B.QL_UF7), RTRIM(B.QL_UF8), RTRIM(B.QL_UF9), RTRIM(B.QL_UF10) from V_QUOTE_LINES A left join GCG_5617_QUOTE_LINE_EXTRA_USER_FIELDS B on A.QUOTE_NO = B.QUOTE_NO and LEFT(A.RECORD_NO,3) = B.QUOTE_LINE where A.QUOTE_NO = '{0}'",v.Local.sQuote,v.Local.sSQL)
+			f.ODBC.Connection!con.ExecuteAndReturn(v.Local.sSQL,v.Local.sRet)
+			f.Intrinsic.Control.If(v.Ambient.ExecuteAndReturnEOF,=,False)
+			'split in case there are multiple records
+				f.Intrinsic.String.Split(v.Local.sRet,"#$#",v.Local.sRet)
+				f.Intrinsic.Control.For(v.Local.iCnt,0,v.Local.sRet.UBound,1)
+				'then split again to get all UFs for each line
+					f.Intrinsic.String.Split(v.Local.sRet(v.Local.iCnt),"*!*",v.Local.sUF)
+					'then update order line UFs
+					f.Intrinsic.String.Build("Update ORDER_LINES set USER_1 = '{0}',USER_2 = '{1}',USER_3 = '{2}',USER_4 = '{3}',USER_5 = '{4}' where ORDER_NO = '{5}' and RECORD_NO = '{6}' and RECORD_NO = 'L'",v.Local.sUF(1),v.Local.sUF(2),v.Local.sUF(3),v.Local.sUF(4),v.Local.sUF(5),v.Local.sOrderNo,v.Local.sUF(0),v.Local.sSQL)
+					f.ODBC.Connection!con.Execute(v.Local.sSQL)
+					'and then update or insert order line extra UFs
+					f.Intrinsic.String.Build("Select * from GCG_5617_ORDER_LINE_EXTRA_USER_FIELDS where ORDER_NO = '{0}' and ORDER_LINE = '{1}'",v.Local.sOrderNo,v.Local.sUF(0),v.Local.sSQL)
+					f.ODBC.Connection!con.ExecuteAndReturn(v.Local.sSQL,v.Local.sRet)
+					f.Intrinsic.Control.If(v.Ambient.ExecuteAndReturnEOF,=,True)
+						f.Intrinsic.String.Build("Insert into GCG_5617_ORDER_LINE_EXTRA_USER_FIELDS values('{0}','{1}','{2}','{3}','{4}','{5}','{6}')",v.Local.sUF(6),v.Local.sUF(7),v.Local.sUF(8),v.Local.sUF(9),v.Local.sUF(10),v.Local.sOrderNo,v.Local.sUF(0),v.Local.sSQL)
+					f.Intrinsic.Control.Else
+						f.Intrinsic.String.Build("Update GCG_5617_ORDER_LINE_EXTRA_USER_FIELDS set OL_UF6 = '{0}',OL_UF7 = '{1}',OL_UF8 = '{2}',OL_UF9 = '{3}',OL_UF10 = '{4}' where ORDER_NO = '{5}' and ORDER_LINE = '{6}'",v.Local.sUF(6),v.Local.sUF(7),v.Local.sUF(8),v.Local.sUF(9),v.Local.sUF(10),v.Local.sOrderNo,v.Local.sRet(0),v.Local.sSQL)
+					f.Intrinsic.Control.EndIf
+					
+					f.ODBC.Connection!con.Execute(v.Local.sSQL)
+					
+				f.Intrinsic.Control.Next(v.Local.iCnt)
+			f.Intrinsic.Control.EndIf
+		f.Intrinsic.Control.EndIf
+	
+
+'pre-save quote line hook	
+	f.Intrinsic.Control.Case(10531)
+		v.Passed.000187.Set("Sort Code")
+		f.intrinsic.string.GSSPartString(v.Passed.000052,v.Passed.000053,v.Local.sPart)
+		
+		f.Intrinsic.String.Build("Select * from V_INVENTORY_MSTR where PART = '{0}'",v.Local.sPart,v.Local.sSQL)
+		f.ODBC.Connection!con.ExecuteAndReturn(v.Local.sSQL,v.Local.sRet)
+		'if it is non-inventory part...
+		f.Intrinsic.Control.If(v.Ambient.ExecuteAndReturnEOF,=,True)
+		'check the sort code against inventory sort code
+			f.Intrinsic.String.Build("Select * from V_INV_SORT where SORT_CODE = '{0}'",v.Passed.000026,v.Local.sSQL)
+			f.ODBC.Connection!con.ExecuteAndReturn(v.Local.sSQL,v.Local.sRet)
+			f.Intrinsic.Control.If(v.Ambient.ExecuteAndReturnEOF,=,True)
+				f.Intrinsic.UI.Msgbox("This sort code does not exist.","Attention!")
+				v.Passed.777777.Set(1)
+			f.Intrinsic.Control.EndIf	
+		'it is inventory part
+		f.Intrinsic.Control.Else
+			f.Intrinsic.String.Build("Select * from V_INV_SORT where SORT_CODE = '{0}'",v.Passed.000026,v.Local.sSQL)
+			f.ODBC.Connection!con.ExecuteAndReturn(v.Local.sSQL,v.Local.sRet)
+			'check against inventory sort code first
+			f.Intrinsic.Control.If(v.Ambient.ExecuteAndReturnEOF,=,True)
+				f.Intrinsic.UI.Msgbox("This sort code does not exist.","Attention!")
+				v.Passed.777777.Set(1)
+			
+			f.Intrinsic.Control.Else
+			'then check against the part's sort code
+				f.Intrinsic.String.Build("Select RTRIM(CODE_SORT) from V_INVENTORY_MSTR where PART = '{0}' and LOCATION = '{1}'",v.Local.sPart,v.Passed.000054,v.Local.sSQL)
+				f.ODBC.Connection!con.ExecuteAndReturn(v.Local.sSQL,v.Local.sRet)
+				f.Intrinsic.Control.If(v.Local.sRet,<>,v.Passed.000026.Trim)
+					f.Intrinsic.String.Build("Part's sort code is not matching with sort code in inventory ({0}).",v.Local.sRet,v.Local.sMsg)
+					f.Intrinsic.UI.Msgbox(v.Local.sMsg,"Attention!")
+					v.Passed.777777.Set(1)
+				f.Intrinsic.Control.EndIf
+			f.Intrinsic.Control.EndIf
+		f.Intrinsic.Control.EndIf
+f.Intrinsic.Control.EndSelect
+
+f.ODBC.Connection!con.Close
+f.Intrinsic.Control.End
+F.Intrinsic.Control.Catch
+	F.Intrinsic.String.Build("Project: {0}{1}{1}Subroutine: {2}{1}Error Occurred {3} with description {4}{1}{1}GAB Version: {5}",V.Ambient.ScriptPath,V.Ambient.Newline,V.Ambient.CurrentSubroutine,V.Ambient.ErrorNumber,V.Ambient.ErrorDescription,V.Ambient.GABVersion,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndTry
+Program.Sub.Main.End
+
+Program.Sub.Comments.Start
+${$5$}$20.1.8207.17809$}$1
+${$6$}$bpham$}$20220628153827513$}$Di0riF4Q5RIv6jxva5zSWBaTvp+T0Dt6ygWz1Xr2qEPv+HLHhKsIt3OiE48DboSW5ryADbd6PLo=
+Program.Sub.Comments.End
