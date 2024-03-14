@@ -1,0 +1,14 @@
+-- Database: GLOBALPLA Metadata version: 2 Exported: Jun 28, 2022
+-- Begin Tables
+SET LEGACYTYPESALLOWED = ON;
+-- Begin Multi-Line Statement
+CREATE TABLE "GCG_5617_ORDER_EXTRA_USER_FIELDS" USING 'GCG_5617_ORDER_EXTRA_USER_FIELDS.mkd' PAGESIZE=4096 (
+ "ORDER_NO" CHAR(7),
+ "OH_UF6" CHAR(100),
+ "OH_UF7" CHAR(100),
+ "OH_UF8" CHAR(100),
+ "OH_UF9" CHAR(100),
+ "OH_UF10" CHAR(100) );
+-- End Multi-Line Statement
+SET LEGACYTYPESALLOWED = OFF;
+-- End Tables
